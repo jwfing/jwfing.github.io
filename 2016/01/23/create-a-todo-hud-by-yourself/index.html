@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+          <head>
+        <meta charset="utf-8">
+            
+            <title>
+                create a todo-hud by yourself | jwfing
+            </title>
+            <meta content="width=device-width, initial-scale=1" name="viewport">
+            <meta name="theme-color" content="#4184f3">
+            
+            
+            <link href="/favicon.ico" rel="icon"/>
+            
+
+            
+<link rel="stylesheet" href="/css/highlight.light.css">
+
+            
+<link rel="stylesheet" href="/css/prism-customize.css">
+
+            
+<link rel="stylesheet" href="/css/nav-icon.css">
+
+            
+<link rel="stylesheet" href="/css/waves.min.css">
+
+            
+<link rel="stylesheet" href="/css/jquery.tocify.css">
+
+            
+<link rel="stylesheet" href="/css/main.css">
+
+            
+<link rel="stylesheet" href="/css/nav-indicator.css">
+
+            
+  
+
+  
+            </meta>
+        </meta>
+    <meta name="generator" content="Hexo 7.2.0"></head>
+
+    <body>
+        <header>
+            <!-- cover image or sth. -->
+        </header>
+        <div id="main" class="m-scene">
+            
+<div class="nav-wrapper">
+
+    <div class="container">
+        <nav>
+            <div class="logo wave">
+                <a href="/" id="logo">
+                    jwfing
+                </a>
+            </div>
+            <div class="nav-toggle-icon" >
+                <div class="material-hamburger">
+                    <span>
+                    </span>
+                    <span>
+                    </span>
+                    <span>
+                    </span>
+                </div>
+            </div>
+            <div class="menu-wrapper">
+                <div class="nav-indicator">
+                </div>
+                <ul class="menus">
+                    
+                     
+                        <li>
+                            <a class="wave " href="/">
+                                Home
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="wave " href="/archives">
+                                Archive
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="wave " href="/about">
+                                About
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="wave no-smoothstate" href="/atom.xml">
+                                RSS
+                            </a>
+                        </li>
+                     
+                    
+                   
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+            <div class="container content">
+                <div class="scene_element scene_element--fadein">
+                    <div class="row">
+    <div class="main">
+        <article>
+          
+          <header class="post-header">
+          
+          </header>
+          <h1 class="post-title">create a todo-hud by yourself</h1>
+
+          <section class="post-info">
+            <span class="post-date">2016/01/23</span>
+            
+            
+          </section>
+
+          <section class="post-content">
+            <p>我已经用过好多款 TodoList 软件，但事情一多总还是丢三落四，原本计划好要做的事情总是安静地躺在某个角落，等我想起来要去扫一眼的时候，都已快「物是人非」。。。</p>
+<p>要是能在桌面上实时显示 TodoList，那该多好！但是 Mac 上做到这一点还真不是一件容易的事，那就退而求其次吧。我想了想，因为公司是使用 Google 办公套件的，自己每天用的最多的软件就是浏览器，要是能在浏览器新开 Tab 页的时候，都能实时显示 TodoList 的话，那就能满足我的需求了。</p>
+<h2 id="最简单的-TodoList"><a href="/2016/01/23/create-a-todo-hud-by-yourself/#最简单的-TodoList" class="headerlink" title="最简单的 TodoList"></a>最简单的 TodoList</h2><p>说做就做，我要的只是一个简单的 web 页面，在上面：</p>
+<ul>
+<li>可以简单展示、创建、关闭待办事项。</li>
+<li>为了通用一点，支持用户账号系统（只要最基本的注册、登录、重置密码就够了）。</li>
+<li>保证内容的私密性。</li>
+</ul>
+<p>所以它不能是一个静态页面，怎么着也要有一个数据库。为了这一点功能，去购买机器、申请域名，甚至还去搞域名备案，实在是不值得，我想 <a target="_blank" rel="noopener" href="https://leancloud.cn/">LeanCloud</a> 的 <a target="_blank" rel="noopener" href="https://leancloud.cn/docs/leanengine_guide-node.html">云引擎</a> 应该是最好的选择。</p>
+<p>LeanCloud 云引擎提供了多个应用模版，最简单的一个 <a target="_blank" rel="noopener" href="https://github.com/leancloud/node-js-getting-started">node-js-getting-started</a> 就已经包括了一个 web app 的基本框架，并且还附带了一个创建 Todo 的简单例子。在它的基础上，再集成了 LeanCloud 自带的账户系统（连重置密码的功能都默认提供，这里不得不说这真是太方便了）。对于内容私密性，我使用了 LeanCloud 数据存储中的「ACL 机制」，让一条待办事项只有它的所有者可以访问，其他人连读取的权限都没有，这样就保证了用户之间的数据隔离。最后，UI 怎么办呢？对于我这样的前端小白来讲，<a target="_blank" rel="noopener" href="http://fezvrasta.github.io/bootstrap-material-design/">bootstrap-material-design</a> 已经是我能想到的最理想的组合了。</p>
+<p>最后做出来的效果是这样：</p>
+<ul>
+<li>用户注册</li>
+</ul>
+<p><img src="http://ac-ebjr3wfn.clouddn.com/c659a76061d15bda.png" alt="Images"></p>
+<ul>
+<li>Todo List</li>
+</ul>
+<p><img src="http://ac-ebjr3wfn.clouddn.com/508117cbd1603dcb.png" alt="Images"></p>
+<p>这个项目的所有代码都放在 <a target="_blank" rel="noopener" href="https://github.com/jwfing/syncus">github&#x2F;syncus</a> 上了，大家可以自行获取，然后在 LeanCloud 中去部署自己的 web 应用。不过对于想直接试一试的朋友来讲，大家也可以使用这个地址 <a target="_blank" rel="noopener" href="https://syncus.leanapp.cn/todos">https://syncus.leanapp.cn/todos</a> 来访问这一在线的 Todo List。</p>
+<h2 id="让-TodoList-抬头显示"><a href="/2016/01/23/create-a-todo-hud-by-yourself/#让-TodoList-抬头显示" class="headerlink" title="让 TodoList 抬头显示"></a>让 TodoList 抬头显示</h2><p>TodoList 做完了，现在我们要想办法让它能够做到「抬头显示」，否则对我来说也没啥帮助，不过是又造了一个轮子而已。</p>
+<p>以下内容引自 <a target="_blank" rel="noopener" href="http://www.guidingtech.com/8004/have-new-tab-page-open-specific-website-firefox-chrome/">How to Have the New Tab Open a Specific Website Automatically in Chrome and Firefox</a>:</p>
+<h3 id="Chrome-设置"><a href="/2016/01/23/create-a-todo-hud-by-yourself/#Chrome-设置" class="headerlink" title="Chrome 设置"></a>Chrome 设置</h3><p>Chrome 上设置稍微有点复杂，需要借助其他插件，其步骤如下：</p>
+<ol>
+<li>从 Chrome Web Store 下载安装 <a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/cnkhddihkmmiiclaipbaaelfojkmlkja?ct=recommended">Replace New Tab Page</a>。</li>
+<li>打开 Chrome 插件管理器（你也可以在地址栏直接输入 chrome:&#x2F;&#x2F;extensions&#x2F;）<br><img src="http://ac-ebjr3wfn.clouddn.com/ff7233c149350103.png" alt="Images"></li>
+<li>点击 Replace New Tab Page 的 <strong>Options</strong> 链接.<br><img src="http://ac-ebjr3wfn.clouddn.com/a977683f33b1b8bc.png" alt="Images"></li>
+<li>在地址栏中输入 <strong><a target="_blank" rel="noopener" href="https://syncus.leanapp.cn/todos">https://syncus.leanapp.cn/todos</a></strong>。<br><img src="http://ac-ebjr3wfn.clouddn.com/94d29962dd0db3c8.png" alt="Images"></li>
+</ol>
+<p>OK，一切都好了，从现在开始，你每次打开一个新的 Tab 页，都会首先看到你自己的待办事项。</p>
+<h3 id="Firefox-设置"><a href="/2016/01/23/create-a-todo-hud-by-yourself/#Firefox-设置" class="headerlink" title="Firefox 设置"></a>Firefox 设置</h3><ol>
+<li>在 Firefox 上我们也需要安装插件 <a target="_blank" rel="noopener" href="https://addons.mozilla.org/en-US/firefox/addon/newtaburl/">NewTabURL</a>。</li>
+<li>重启浏览器，可以通过 Ctrl+Shift+A 来打开插件管理页面，找到 NewTabURL 并点击 Options 按钮。<br><img src="http://www.guidingtech.com/assets/postimages/2011/09/NewTabURL-Option.png" alt="Images"></li>
+<li>选择 URL 并输入 <strong><a target="_blank" rel="noopener" href="https://syncus.leanapp.cn/todos">https://syncus.leanapp.cn/todos</a></strong>。<br><img src="http://www.guidingtech.com/assets/postimages/2011/09/NewTabURL-configuration.png" alt="Images"></li>
+</ol>
+<h3 id="Safari-设置"><a href="/2016/01/23/create-a-todo-hud-by-yourself/#Safari-设置" class="headerlink" title="Safari 设置"></a>Safari 设置</h3><ol>
+<li>进入 Safari 的设置页面。</li>
+<li>在 <code>Homepage</code> 框中输入 <strong><a target="_blank" rel="noopener" href="https://syncus.leanapp.cn/todos">https://syncus.leanapp.cn/todos</a></strong>，然后把 <code>New tabs open with</code> 中选定 <code>Homepage</code>。<br><img src="http://ac-ebjr3wfn.clouddn.com/db4bc90a5aa0e80f.png" alt="Images"></li>
+</ol>
+<h2 id="使用中可能的问题"><a href="/2016/01/23/create-a-todo-hud-by-yourself/#使用中可能的问题" class="headerlink" title="使用中可能的问题"></a>使用中可能的问题</h2><ul>
+<li>Chrome 中 CSS 文件加载不了，页面显示异常</li>
+</ul>
+<p>这可能是因为 LeanCloud 文件托管的域名导致的，可以参考这篇文章解决<a target="_blank" rel="noopener" href="http://www.techfor.us/2015/06/your-connection-is-not-private-er_cert_common_name_invalid/">Fix Your Connection is not private error in Chrome</a>.</p>
+
+          </section>
+        </article>
+        
+
+       
+        <div class="pager">
+          
+            <a class="post-prev pager-item" href="/2024/06/07/hello-world/" >
+              <strong class="article-nav-caption">Newer</strong>
+              <p class="post-nav-title">Hello World</p>
+            </a>
+          
+          
+        </div>
+        
+
+         <!-- comments -->
+        <div class="comment-section">
+  
+    
+
+
+</div>
+
+    </div>
+    
+    <aside>
+        <div id="toc">
+        </div>
+    </aside>
+    
+</div>
+
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+    <p>由<a href="http://hexo.io/" target="_blank">Hexo</a>强力驱动，搭载<a target="_blank" rel="noopener" href="https://github.com/wayou/hexo-theme-gstyle">gstyle</a>主题</p>
+    <p>
+        &copy; 2024 Junwen Feng
+    </p>
+</footer>
+
+<script src="/lib/jquery.js"></script>
+
+
+<script src="/lib/waves.js"></script>
+
+
+<script src="/lib/jquery-ui.js"></script>
+
+
+<script src="/lib/jquery.tocify.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+    </body>
+</html>

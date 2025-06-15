@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+          <head>
+        <meta charset="utf-8">
+            
+            <title>
+                What is observability? beyond logging, metrics, tracing | Jonven‘s Blog
+            </title>
+            <meta content="width=device-width, initial-scale=1" name="viewport">
+            <meta name="theme-color" content="#4184f3">
+            
+            <!-- Favicon -->
+            <link rel="icon" type="image/x-icon" href="/favicon.ico">
+            <link rel="icon" type="image/png" href="/favicon.png">
+            
+            
+
+            
+<link rel="stylesheet" href="/css/highlight.light.css">
+
+            
+<link rel="stylesheet" href="/css/prism-customize.css">
+
+            
+<link rel="stylesheet" href="/css/nav-icon.css">
+
+            
+<link rel="stylesheet" href="/css/waves.min.css">
+
+            
+<link rel="stylesheet" href="/css/jquery.tocify.css">
+
+            
+<link rel="stylesheet" href="/css/main.css">
+
+            
+<link rel="stylesheet" href="/css/nav-indicator.css">
+
+            
+  
+
+  
+            </meta>
+        </meta>
+    <meta name="generator" content="Hexo 7.2.0"></head>
+
+    <body>
+        <header>
+            <!-- cover image or sth. -->
+        </header>
+        <div id="main" class="m-scene">
+            
+<div class="nav-wrapper">
+
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <a href="/" id="logo" class="nav-logo">
+                    <img src="/logo.png" alt="logo" class="site-logo">
+                    Jonven‘s Blog
+                </a>
+            </div>
+            <div class="nav-toggle-icon" >
+                <div class="material-hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="menu-wrapper">
+                <ul class="menus">
+                    
+                     
+                        <li>
+                            <a class="nav-link " href="/">
+                                Home
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="nav-link " href="/archives">
+                                Archive
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="nav-link " href="/about">
+                                About
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="nav-link no-smoothstate" href="/atom.xml">
+                                RSS
+                            </a>
+                        </li>
+                     
+                    
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<style>
+.nav-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.nav-logo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.site-logo {
+    height: 32px;
+    width: auto;
+    display: block;
+}
+
+.menu-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.menus {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menus li {
+    margin: 0 1rem;
+}
+
+.menus li a {
+    color: #333 !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    position: relative;
+}
+
+.menus li a:hover {
+    color: #0066cc !important;
+}
+
+.menus li.active a {
+    color: #0066cc !important;
+}
+
+.menus li.active a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #0066cc;
+}
+
+@media (max-width: 768px) {
+    .menu-wrapper {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 1rem 0;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .menu-wrapper.active {
+        transform: translateY(0);
+    }
+
+    .menus {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menus li {
+        margin: 0.5rem 0;
+    }
+
+    .menus li a {
+        display: block;
+        padding: 0.5rem 1rem;
+    }
+}
+</style>
+            <div class="container content">
+                <div class="scene_element scene_element--fadein">
+                    <div class="row">
+    <div class="main">
+        <article>
+          
+          <header class="post-header">
+          
+          </header>
+          <h1 class="post-title">What is observability? beyond logging, metrics, tracing</h1>
+
+          <section class="post-info">
+            <span class="post-date">2025/01/23</span>
+            
+            
+            <span class="post-tags">
+              <ul class="post-tag-list" itemprop="keywords"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/apps-and-microservices/" rel="tag">apps and microservices</a></li><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/logging/" rel="tag">logging</a></li><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/metrics/" rel="tag">metrics</a></li><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/observability/" rel="tag">observability</a></li><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/tracing/" rel="tag">tracing</a></li></ul>
+            </span>
+            
+          </section>
+
+          <section class="post-content">
+            <p>可观测性（Observability）是指系统能够提供对其运行状态、性能以及使用情况有全面了解的能力。这一概念在软件开发和运维中非常重要，因为它帮助开发者和运维人员及时发现问题、优化性能并提升用户体验。具体来说，可观测性包含哪些技术呢？</p>
+<ol>
+<li>首先是日志管理系统（logging），这是用来收集和存储应用程序或系统产生的日志信息。比如说 Web 服务器可能会记录每个请求的详细信息，这样可以帮助开发人员调试问题。常见的开源方案有 ELK(ElasticSearch, Logstash&#x2F;Filebeat, Kibana) 和 Grafana(Alloy + Loki)，</li>
+<li>其次是性能监控工具（metrics），比如 Prometheus 或者 Grafana。这类工具能够实时监控系统的各种指标，如 CPU 使用率、内存占用等等。这些数据可以帮助 IT 团队及时发现系统性能下降的情况，从而进行优化。</li>
+<li>分布式跟踪工具（tracing），像 Dapper 或 Jaeger&#x2F;Grafana Tempo，追踪用户请求在整个系统中的流程，帮助识别性能瓶颈和错误来源。</li>
+</ol>
+<p>logging、metrics、tracing 被称为可观测性的三个支柱，但是可观测性不光只有这「三巨头」，还应该包括：</p>
+<ol>
+<li>故障预警与根因分析，是指通过综合分析日志、指标和 tracing 数据，使用机器学习算法预测潜在故障或异常情况，或者面对线上故障进行根因分析。</li>
+<li>网络流量监控，涉及到如何管理和分析网络流量，以确保系统不会被攻击或过载。常用的工具有防火墙、入侵检测系统（IDS）、网络流量分析工具（如 NetFlow&#x2F;sFlow、Calico、Cacti、Flowmeter&#x2F;Flowtop）等。</li>
+<li>安全事件监控，收集并分析安全相关的日志和事件，以及时发现和应对威胁。现在有一些商业化的 SIEM（Security Information and Event Management）系统，如 Splunk、QRadar 等。</li>
+<li>用户行为可观测性，涉及到如何跟踪用户在应用中的活动，分析他们的使用模式。比如，记录用户登录时间、操作频率等信息，帮助优化用户体验。</li>
+</ol>
+<p>可观测性的实现涉及多个关键技术和工具，旨在确保系统的可监控性和可分析性，其核心要素是：</p>
+<ul>
+<li>数据收集：通过日志记录、指标监控、网络流量分析等方式收集系统运行的各种数据。</li>
+<li>数据存储与处理：将收集到的数据存储在合适的数据仓库中，并使用工具进行数据分析和可视化，以便快速获取信息。</li>
+<li>问题检测与根因分析：通过数据分析，及时发现系统异常或性能下降的情况，并利用追踪功能确定问题根源。</li>
+</ul>
+<p>由此可见可观测性不仅仅是监控系统状态，更是一种对整个系统运行情况有深入理解的能力，尤其是在处理复杂、分布式的大型系统时，这变得尤为重要。这是由于：</p>
+<ol>
+<li>复杂性与规模。大型系统通常由多个子服务和组件构成，可能部署在不同的服务器上甚至分布式环境中。传统的监控方法可能难以应对这种复杂性，可观测性通过全面的数据收集和分析能力，帮助管理员有效跟踪各个组件的运行状态。</li>
+<li>性能瓶颈与资源使用。大型系统在高并发或高负载下容易面临性能问题。可观测性提供了对资源（如CPU、内存、网络带宽）的实时监控，帮助识别资源耗尽的情况，并及时优化资源分配。</li>
+<li>故障定位与修复。在大型系统中，错误或崩溃可能出现在任何一个组件。可观测性通过详细的日志和性能数据，便于快速定位问题根源，加快故障修复速度，减少系统停机时间。</li>
+<li>用户体验与业务需求。大型系统往往面向多个用户或企业内部的不同部门。可观测性能够监控用户行为和请求路径，为业务优化提供数据支持，如识别热门功能或性能瓶颈，提升用户满意度。</li>
+<li>自动化运维与自我修复。可观测性赋予系统自我检测和调整的能力。在异常情况下，系统可以根据历史数据和当前状态自动采取措施，如资源调配、服务重启或故障报告，从而减少人工干预。</li>
+<li>扩展性与灵活性。随着业务需求的变化，大型系统需要频繁进行规模调整或功能升级。可观测性提供了对新添加组件和修改后的系统状态的全面监控，确保扩展过程中的稳定性。</li>
+<li>安全事件响应。大型系统通常处理敏感数据，面临更高的安全威胁。通过可观测性的日志分析，可以快速检测异常活动或潜在安全漏洞，加快响应速度，减少潜在损失。</li>
+</ol>
+<p>总之，可观测性是一个涵盖多个技术和工具的概念，其核心在于通过全面、实时的数据收集与分析，帮助系统管理员和开发者更好地了解和管理系统运行状态，它是大型系统实现高效运维、保障性能和用户体验的关键技术，不仅提高了系统的稳定性和可靠性，还支持业务增长和扩展需求。对于那些需要处理海量数据、高并发请求、复杂分布式架构的大型系统来说，可观测性无疑是不可或缺的核心能力。</p>
+
+          </section>
+        </article>
+        
+
+       
+        <div class="pager">
+          
+            <a class="post-prev pager-item" href="/2025/01/24/build-unified-observability-solution-with-clickhouse-grafana/" >
+              <strong class="article-nav-caption">Newer</strong>
+              <p class="post-nav-title">Build an unified observability solution with clickhouse and grafana</p>
+            </a>
+          
+          
+            <a class="post-next pager-item" href="/2016/01/23/create-a-todo-hud-by-yourself/">
+              <strong class="article-nav-caption">Older</strong>
+              <p class="post-nav-title">Create a todo-hud by yourself</p>
+            </a>
+          
+        </div>
+        
+
+         <!-- comments -->
+        <div class="comment-section">
+  
+    
+
+    <!-- 多说评论框 start -->
+      <div class="ds-thread" data-thread-key="_posts/what-is-observability.md" data-title="What is observability? beyond logging, metrics, tracing" data-url="http://jwfing.github.io/2025/01/23/what-is-observability/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name:"wayouliu"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+
+  
+
+
+</div>
+
+    </div>
+    
+</div>
+
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+    <p>由<a href="http://hexo.io/" target="_blank">Hexo</a>强力驱动，搭载<a target="_blank" rel="noopener" href="https://github.com/wayou/hexo-theme-gstyle">gstyle</a>主题</p>
+    <p>
+        &copy; 2025 Jonven Feng
+    </p>
+</footer>
+
+<script src="/lib/jquery.js"></script>
+
+
+<script src="/lib/waves.js"></script>
+
+
+<script src="/lib/jquery-ui.js"></script>
+
+
+<script src="/lib/jquery.tocify.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+    </body>
+</html>

@@ -2,17 +2,30 @@
 
 /* highlight */
 
-pre, .highlight, .gist {  
+.highlight {
   background: #333;
   margin: 0.5em 0;
   padding: 1em 2%;
   overflow: auto;
-  color: #ccc;  
+  color: #ccc;
   font-size: 14px;
   text-shadow: none;
   /*border-style: solid;*/
   /*border-color: #ddd;*/
   /*border-width: 1px 0;*/
+  border-left: 4px solid #0D47A1;
+  line-height: 22.400000000000002px;
+  margin: 15px -15px;
+}
+
+.gist {
+  background: #333;
+  margin: 0.5em 0;
+  padding: 1em 2%;
+  overflow: auto;
+  color: #ccc;
+  font-size: 14px;
+  text-shadow: none;
   border-left: 4px solid #0D47A1;
   line-height: 22.400000000000002px;
   margin: 15px -15px;
@@ -42,10 +55,12 @@ code {
   font-family: Menlo, "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Monaco, Consolas, monospace;  
 }
 
-pre code {
+.highlight code {
   background: none;
   text-shadow: none;
   padding: 0;
+  border: none;
+  margin: 0;
 }
 
 .highlight pre {
@@ -53,6 +68,7 @@ pre code {
   margin: 0;
   padding: 0;
   white-space: pre;
+  background: none;
 }
 
 .highlight table {

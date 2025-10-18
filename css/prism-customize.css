@@ -9,7 +9,7 @@ section.post-content pre>code {
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
 
-section.post-content .highlight pre,section.post-content pre {
+section.post-content .highlight {
     padding: 1.5em;
     overflow: auto;
     font-size: 0.9em;
@@ -18,6 +18,13 @@ section.post-content .highlight pre,section.post-content pre {
     border: 1px solid #e1e4e8;
     border-radius: 6px;
     margin: 1.5em 0;
+}
+
+section.post-content .highlight pre {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
 }
 
 section.post-content pre {
@@ -50,12 +57,12 @@ section.post-content pre .token.operator{
 }
 section.post-content pre[class*="language-"] {
     border-radius: 6px;
-    background: #f6f8fa;
+    background: transparent;
     position: relative;
     font-size: 0.9em;
-    margin: 1.5em 0;
-    padding: 1.5em;
-    border: 1px solid #e1e4e8;
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 
 

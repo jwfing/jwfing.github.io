@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+          <head>
+        <meta charset="utf-8">
+            
+            <title>
+                Understanding the Docker Host Gateway | Junwen‘s Blog
+            </title>
+            <meta content="width=device-width, initial-scale=1" name="viewport">
+            <meta name="theme-color" content="#4184f3">
+            
+            <!-- Favicon -->
+            <link rel="icon" type="image/x-icon" href="/favicon.ico">
+            <link rel="icon" type="image/png" href="/favicon.png">
+            
+            
+
+            
+<link rel="stylesheet" href="/css/highlight.light.css">
+
+            
+<link rel="stylesheet" href="/css/prism-customize.css">
+
+            
+<link rel="stylesheet" href="/css/nav-icon.css">
+
+            
+<link rel="stylesheet" href="/css/waves.min.css">
+
+            
+<link rel="stylesheet" href="/css/jquery.tocify.css">
+
+            
+<link rel="stylesheet" href="/css/main.css">
+
+            
+<link rel="stylesheet" href="/css/nav-indicator.css">
+
+            
+  
+
+  
+            </meta>
+        </meta>
+    <meta name="generator" content="Hexo 7.2.0"></head>
+
+    <body>
+        <header>
+            <!-- cover image or sth. -->
+        </header>
+        <div id="main" class="m-scene">
+            
+<div class="nav-wrapper">
+
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <a href="/" id="logo" class="nav-logo">
+                    <img src="/logo.png" alt="logo" class="site-logo">
+                    Junwen‘s Blog
+                </a>
+            </div>
+            <div class="nav-toggle-icon" >
+                <div class="material-hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="menu-wrapper">
+                <ul class="menus">
+                    
+                     
+                        <li>
+                            <a class="nav-link " href="/">
+                                Home
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="nav-link " href="/archives">
+                                Archive
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="nav-link " href="/about">
+                                About
+                            </a>
+                        </li>
+                     
+                        <li>
+                            <a class="nav-link no-smoothstate" href="/atom.xml">
+                                RSS
+                            </a>
+                        </li>
+                     
+                    
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<style>
+.nav-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.nav-logo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.site-logo {
+    height: 32px;
+    width: auto;
+    display: block;
+}
+
+.menu-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.menus {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menus li {
+    margin: 0 1rem;
+}
+
+.menus li a {
+    color: #333 !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    position: relative;
+}
+
+.menus li a:hover {
+    color: #0066cc !important;
+}
+
+.menus li.active a {
+    color: #0066cc !important;
+}
+
+.menus li.active a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #0066cc;
+}
+
+@media (max-width: 768px) {
+    .menu-wrapper {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 1rem 0;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .menu-wrapper.active {
+        transform: translateY(0);
+    }
+
+    .menus {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menus li {
+        margin: 0.5rem 0;
+    }
+
+    .menus li a {
+        display: block;
+        padding: 0.5rem 1rem;
+    }
+}
+</style>
+            <div class="container content">
+                <div class="scene_element scene_element--fadein">
+                    <div class="row">
+    <div class="main">
+        <article>
+          
+          <header class="post-header">
+          
+          </header>
+          <h1 class="post-title">Understanding the Docker Host Gateway</h1>
+
+          <section class="post-info">
+            <span class="post-date">2025/10/17</span>
+            
+            
+            <span class="post-tags">
+              <ul class="post-tag-list" itemprop="keywords"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/Bridge/" rel="tag">Bridge</a></li><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/Network-Isolation/" rel="tag">Network Isolation</a></li></ul>
+            </span>
+            
+          </section>
+
+          <section class="post-content">
+            <p>在深入理解 Docker 的宿主机网关之前,我们需要先理解网络中「网关」的基本概念。</p>
+<p>在传统网络中,<strong>网关 (Gateway)</strong> 是连接两个不同网络的设备或节点。它就像是两个网络之间的「门」，负责在不同网络之间转发数据包。举个生活中的例子:</p>
+<ul>
+<li>你家里的路由器就是一个网关</li>
+<li>你的电脑(如 192.168.1.100)想访问互联网上的网站</li>
+<li>数据包必须先发送到路由器(如 192.168.1.1)</li>
+<li>路由器再将数据包转发到互联网</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[你的电脑] ---&gt; [家庭路由器/网关] ---&gt; [互联网]</span><br><span class="line">192.168.1.100    192.168.1.1          外部网络</span><br></pre></td></tr></table></figure>
+
+<p>由此可见，网关有如下作用：</p>
+<ol>
+<li><strong>路由转发</strong>: 将数据包从一个网络转发到另一个网络</li>
+<li><strong>地址转换</strong>: 进行 NAT (网络地址转换)</li>
+<li><strong>协议转换</strong>: 在不同协议的网络之间转换</li>
+<li><strong>访问控制</strong>: 控制哪些数据可以通过</li>
+</ol>
+<h2 id="Docker-网络架构中的网关"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#Docker-网络架构中的网关" class="headerlink" title="Docker 网络架构中的网关"></a>Docker 网络架构中的网关</h2><h3 id="Docker-桥接网络-Bridge-Network"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#Docker-桥接网络-Bridge-Network" class="headerlink" title="Docker 桥接网络 (Bridge Network)"></a>Docker 桥接网络 (Bridge Network)</h3><p>当你使用 Docker 时,Docker 会创建一个<strong>虚拟网桥 (Virtual Bridge)</strong>,默认名为 <code>docker0</code>。这个虚拟网桥的工作原理类似于物理交换机,它连接了:</p>
+<ul>
+<li>宿主机的网络</li>
+<li>各个容器的虚拟网络接口</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">        宿主机 (Host OS)</span><br><span class="line">        ┌─────────────────────────────────┐</span><br><span class="line">        │                                 │</span><br><span class="line">        │   物理网卡 (eth0)                │</span><br><span class="line">        │  IP: 192.168.0.10               │</span><br><span class="line">        │         ↕                       │</span><br><span class="line">        │  ┌─────────────────┐            │</span><br><span class="line">        │  │   docker0       │            │</span><br><span class="line">        │  │   (虚拟网桥)     │            │</span><br><span class="line">        │  │  172.17.0.1 ←── 这是网关!     │</span><br><span class="line">        │  └────────┬────────┘            │</span><br><span class="line">        │           │                     │</span><br><span class="line">        │     ┌─────┴──────┐              │</span><br><span class="line">        │     │            │              │</span><br><span class="line">        │  ┌──┴──┐     ┌──┴──┐            │</span><br><span class="line">        │  │veth1│     │veth2│            │</span><br><span class="line">        │  └──┬──┘     └──┬──┘            │</span><br><span class="line">        └─────┼──────────┼────────────────┘</span><br><span class="line">              │          │</span><br><span class="line">        ┌─────┴──────────┴─────┐</span><br><span class="line">        │                      │</span><br><span class="line">┌───────┴────────┐     ┌───────┴──────────┐</span><br><span class="line">│  容器 A         │     │  容器 B          │</span><br><span class="line">│  eth0           │    │  eth0            │</span><br><span class="line">│  172.17.0.2     │    │  172.17.0.3      │</span><br><span class="line">│                 │    │                  │</span><br><span class="line">│  网关: 172.17.0.1│    │ 网关: 172.17.0.1 │</span><br><span class="line">└─────────────────┘    └──────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="网关-IP-的含义"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#网关-IP-的含义" class="headerlink" title="网关 IP 的含义"></a>网关 IP 的含义</h3><p><strong>Docker 网关 IP (172.17.0.1)</strong> 实际上是:</p>
+<ol>
+<li><strong>虚拟网桥 docker0 在容器网络中的 IP 地址</strong></li>
+<li><strong>容器访问外部网络的出口</strong></li>
+<li><strong>容器访问宿主机的入口</strong></li>
+</ol>
+<h3 id="为什么网关可以访问到宿主机"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#为什么网关可以访问到宿主机" class="headerlink" title="为什么网关可以访问到宿主机?"></a>为什么网关可以访问到宿主机?</h3><p>这是最关键的理解点。让我们一步步分解:</p>
+<h4 id="1-网桥在宿主机上"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#1-网桥在宿主机上" class="headerlink" title="1. 网桥在宿主机上"></a>1. 网桥在宿主机上</h4><p><code>docker0</code> 虚拟网桥实际上是宿主机上的一个网络设备,你可以在宿主机上看到它:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在宿主机上执行</span></span><br><span class="line">ip addr show docker0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出类似:</span></span><br><span class="line"><span class="comment"># 4: docker0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP</span></span><br><span class="line"><span class="comment">#     link/ether 02:42:5e:8f:32:a1 brd ff:ff:ff:ff:ff:ff</span></span><br><span class="line"><span class="comment">#     inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0</span></span><br><span class="line"><span class="comment">#        valid_lft forever preferred_lft forever</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-网关既在容器网络中-也在宿主机网络中"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#2-网关既在容器网络中-也在宿主机网络中" class="headerlink" title="2. 网关既在容器网络中,也在宿主机网络中"></a>2. 网关既在容器网络中,也在宿主机网络中</h4><p><code>docker0</code> 网桥是一个特殊的存在,它同时属于两个「世界」:</p>
+<ul>
+<li><strong>在容器的视角</strong>: 172.17.0.1 是网关,是通往外部的出口</li>
+<li><strong>在宿主机的视角</strong>: 172.17.0.1 是本机的一个网络接口</li>
+</ul>
+<p>这就像是一扇门:</p>
+<ul>
+<li>从容器内看,门通往外面(宿主机)</li>
+<li>从宿主机看,门就在自己家里</li>
+</ul>
+<h4 id="3-数据包的流转过程"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#3-数据包的流转过程" class="headerlink" title="3. 数据包的流转过程"></a>3. 数据包的流转过程</h4><p>当容器访问 172.17.0.1 时:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">步骤 1: 容器发送数据包</span><br><span class="line">[容器 172.17.0.2] ---&gt; 目标: 172.17.0.1</span><br><span class="line">                      &quot;我要访问网关&quot;</span><br><span class="line"></span><br><span class="line">步骤 2: 数据包通过 veth pair (虚拟网线)</span><br><span class="line">[容器的 eth0] ---&gt; [veth1] ---&gt; [docker0 网桥]</span><br><span class="line"></span><br><span class="line">步骤 3: docker0 收到数据包</span><br><span class="line">docker0 发现: &quot;这个包是发给我的 (172.17.0.1)&quot;</span><br><span class="line"></span><br><span class="line">步骤 4: 包被宿主机的网络栈处理</span><br><span class="line">由于 docker0 是宿主机上的设备,数据包实际上被宿主机的内核处理</span><br><span class="line"></span><br><span class="line">步骤 5: 如果访问的是宿主机端口 (如 6379)</span><br><span class="line">数据包被转发到宿主机上监听 6379 端口的服务</span><br></pre></td></tr></table></figure>
+
+<h2 id="详细示例-容器访问宿主机上的-Redis"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#详细示例-容器访问宿主机上的-Redis" class="headerlink" title="详细示例:容器访问宿主机上的 Redis"></a>详细示例:容器访问宿主机上的 Redis</h2><p>让我们通过一个完整的例子来理解:</p>
+<h3 id="场景设置"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#场景设置" class="headerlink" title="场景设置"></a>场景设置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 宿主机上启动 Redis (监听所有接口)</span></span><br><span class="line">docker run -d -p 6379:6379 redis</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 查看 Docker 网络信息</span></span><br><span class="line">docker network inspect bridge</span><br></pre></td></tr></table></figure>
+
+<p>输出类似:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;Name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;bridge&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;IPAM&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;Config&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;Subnet&quot;</span><span class="punctuation">:</span> <span class="string">&quot;172.17.0.0/16&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;Gateway&quot;</span><span class="punctuation">:</span> <span class="string">&quot;172.17.0.1&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="数据包流转详解"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#数据包流转详解" class="headerlink" title="数据包流转详解"></a>数据包流转详解</h3><p>假设 OpenResty 容器 (172.17.0.5) 要访问宿主机的 Redis:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">第 1 步: OpenResty 容器内的代码</span><br><span class="line">────────────────────────────────</span><br><span class="line">red:connect(&quot;172.17.0.1&quot;, 6379)</span><br><span class="line">┌─────────────────────────┐</span><br><span class="line">│ OpenResty 容器           │</span><br><span class="line">│ IP: 172.17.0.5          │</span><br><span class="line">│                         │</span><br><span class="line">│ 发送: SYN 包             │</span><br><span class="line">│ 源: 172.17.0.5:随机端口   │</span><br><span class="line">│ 目标: 172.17.0.1:6379    │</span><br><span class="line">└─────────────────────────┘</span><br><span class="line">         │</span><br><span class="line">         │ 数据包通过容器的网络命名空间</span><br><span class="line">         ↓</span><br><span class="line"></span><br><span class="line">第 2 步: 通过虚拟网卡对 (veth pair)</span><br><span class="line">────────────────────────────────</span><br><span class="line">         │</span><br><span class="line">    [容器内 eth0]</span><br><span class="line">         │</span><br><span class="line">         │ (veth pair 就像一根虚拟网线)</span><br><span class="line">         │</span><br><span class="line">    [宿主机上的 veth-xxx]</span><br><span class="line">         │</span><br><span class="line">         ↓</span><br><span class="line"></span><br><span class="line">第 3 步: 到达 docker0 网桥</span><br><span class="line">────────────────────────────────</span><br><span class="line">┌──────────────────────────┐</span><br><span class="line">│  docker0 虚拟网桥          │</span><br><span class="line">│  IP: 172.17.0.1          │</span><br><span class="line">│                          │</span><br><span class="line">│  收到数据包:               │</span><br><span class="line">│  目标地址是我自己!          │</span><br><span class="line">│  目标端口是 6379           │</span><br><span class="line">└──────────────────────────┘</span><br><span class="line">         │</span><br><span class="line">         │ docker0 是宿主机上的设备</span><br><span class="line">         │ 所以数据包实际上已经&quot;到达&quot;宿主机</span><br><span class="line">         ↓</span><br><span class="line"></span><br><span class="line">第 4 步: 端口转发规则生效</span><br><span class="line">────────────────────────────────</span><br><span class="line">宿主机网络栈处理这个包:</span><br><span class="line">- 目标 IP: 172.17.0.1 (这是本机 IP)</span><br><span class="line">- 目标端口: 6379</span><br><span class="line"></span><br><span class="line">宿主机检查: &quot;有程序在监听 6379 吗?&quot;</span><br><span class="line">- 发现 Redis 容器通过 -p 6379:6379 映射了端口</span><br><span class="line">- iptables 规则将请求转发到 Redis 容器</span><br><span class="line"></span><br><span class="line">第 5 步: 到达 Redis 容器</span><br><span class="line">────────────────────────────────</span><br><span class="line">         │</span><br><span class="line">         ↓</span><br><span class="line">┌─────────────────────────┐</span><br><span class="line">│ Redis 容器               │</span><br><span class="line">│ IP: 172.17.0.2          │</span><br><span class="line">│                         │</span><br><span class="line">│ Redis 服务收到连接请求     │</span><br><span class="line">└─────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="关键的-iptables-规则"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#关键的-iptables-规则" class="headerlink" title="关键的 iptables 规则"></a>关键的 iptables 规则</h3><p>Docker 在宿主机上创建了一系列 iptables 规则来实现端口映射:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在宿主机上查看</span></span><br><span class="line">sudo iptables -t nat -L -n | grep 6379</span><br><span class="line"></span><br><span class="line"><span class="comment"># 会看到类似规则:</span></span><br><span class="line"><span class="comment"># DNAT  tcp  --  0.0.0.0/0  0.0.0.0/0  tcp dpt:6379 to:172.17.0.2:6379</span></span><br></pre></td></tr></table></figure>
+
+<p>这条规则的意思是:</p>
+<ul>
+<li>任何到达宿主机 6379 端口的 TCP 连接</li>
+<li>都会被 DNAT (目标地址转换) 到 172.17.0.2:6379 (Redis 容器)</li>
+</ul>
+<h2 id="不同场景下的网关"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#不同场景下的网关" class="headerlink" title="不同场景下的网关"></a>不同场景下的网关</h2><h3 id="1-默认-bridge-网络"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#1-默认-bridge-网络" class="headerlink" title="1. 默认 bridge 网络"></a>1. 默认 bridge 网络</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network inspect bridge</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>网关: 通常是 172.17.0.1</li>
+<li>子网: 172.17.0.0&#x2F;16</li>
+</ul>
+<h3 id="2-自定义-bridge-网络"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#2-自定义-bridge-网络" class="headerlink" title="2. 自定义 bridge 网络"></a>2. 自定义 bridge 网络</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker network create --subnet=172.20.0.0/16 my-network</span><br><span class="line">docker network inspect my-network</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>网关: 通常是 172.20.0.1 (子网的第一个 IP)</li>
+<li>子网: 172.20.0.0&#x2F;16</li>
+</ul>
+<h3 id="3-docker-compose-创建的网络"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#3-docker-compose-创建的网络" class="headerlink" title="3. docker-compose 创建的网络"></a>3. docker-compose 创建的网络</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">myapp</span></span><br></pre></td></tr></table></figure>
+
+<p>Docker Compose 会自动创建一个网络,名称类似 <code>projectname_default</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network inspect projectname_default</span><br></pre></td></tr></table></figure>
+
+<p>输出可能是:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;Name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;projectname_default&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;IPAM&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;Config&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;Subnet&quot;</span><span class="punctuation">:</span> <span class="string">&quot;172.18.0.0/16&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;Gateway&quot;</span><span class="punctuation">:</span> <span class="string">&quot;172.18.0.1&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这时容器的网关就是 <strong>172.18.0.1</strong></p>
+<h2 id="如何查找容器的网关-IP"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#如何查找容器的网关-IP" class="headerlink" title="如何查找容器的网关 IP"></a>如何查找容器的网关 IP</h2><h3 id="方法-1-在容器内查看路由表"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#方法-1-在容器内查看路由表" class="headerlink" title="方法 1: 在容器内查看路由表"></a>方法 1: 在容器内查看路由表</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入容器</span></span><br><span class="line">docker <span class="built_in">exec</span> -it container_name sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看默认网关</span></span><br><span class="line">ip route | grep default</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出:</span></span><br><span class="line"><span class="comment"># default via 172.18.0.1 dev eth0</span></span><br><span class="line"><span class="comment">#             ^^^^^^^^^^^</span></span><br><span class="line"><span class="comment">#             这就是网关 IP</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="方法-2-查看容器网络信息"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#方法-2-查看容器网络信息" class="headerlink" title="方法 2: 查看容器网络信息"></a>方法 2: 查看容器网络信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在宿主机上</span></span><br><span class="line">docker inspect container_name | grep Gateway</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出:</span></span><br><span class="line"><span class="comment"># &quot;Gateway&quot;: &quot;172.18.0.1&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="方法-3-在容器内读取环境变量"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#方法-3-在容器内读取环境变量" class="headerlink" title="方法 3: 在容器内读取环境变量"></a>方法 3: 在容器内读取环境变量</h3><p>有些情况下,网关 IP 也可以通过解析 DNS 获取:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在容器内</span></span><br><span class="line">getent hosts host.docker.internal</span><br></pre></td></tr></table></figure>
+
+<h2 id="为什么通过网关能访问宿主机端口"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#为什么通过网关能访问宿主机端口" class="headerlink" title="为什么通过网关能访问宿主机端口"></a>为什么通过网关能访问宿主机端口</h2><p>总结一下关键点:</p>
+<h3 id="1-网关-IP-是宿主机的一部分"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#1-网关-IP-是宿主机的一部分" class="headerlink" title="1. 网关 IP 是宿主机的一部分"></a>1. 网关 IP 是宿主机的一部分</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">172.17.0.1 不是一个&quot;远程&quot;地址</span><br><span class="line">它是宿主机上 docker0 设备的 IP 地址</span><br><span class="line">就像宿主机的 127.0.0.1 或其他网卡 IP 一样</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-端口映射创建了转发规则"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#2-端口映射创建了转发规则" class="headerlink" title="2. 端口映射创建了转发规则"></a>2. 端口映射创建了转发规则</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 6379:6379 redis</span><br></pre></td></tr></table></figure>
+
+<p>这个命令做了什么?</p>
+<ol>
+<li>在宿主机的所有网络接口上监听 6379 端口</li>
+<li>包括 docker0 (172.17.0.1) 接口</li>
+<li>创建 iptables 规则: 所有到 6379 的连接 → 转发到 Redis 容器</li>
+</ol>
+<h3 id="3-容器访问网关-访问宿主机"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#3-容器访问网关-访问宿主机" class="headerlink" title="3. 容器访问网关 &#x3D; 访问宿主机"></a>3. 容器访问网关 &#x3D; 访问宿主机</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">容器访问 172.17.0.1:6379</span><br><span class="line">    ↓</span><br><span class="line">实际上是访问宿主机的 docker0 接口的 6379 端口</span><br><span class="line">    ↓</span><br><span class="line">宿主机的 iptables 规则生效</span><br><span class="line">    ↓</span><br><span class="line">连接被转发到 Redis 容器的 6379 端口</span><br></pre></td></tr></table></figure>
+
+<h2 id="常见误区"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#常见误区" class="headerlink" title="常见误区"></a>常见误区</h2><h3 id="误区-1-「网关就是宿主机」"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#误区-1-「网关就是宿主机」" class="headerlink" title="误区 1: 「网关就是宿主机」"></a>误区 1: 「网关就是宿主机」</h3><p><strong>错误理解</strong>: 网关 IP 就是宿主机 IP</p>
+<p><strong>正确理解</strong>: </p>
+<ul>
+<li>网关 IP 是 docker0 虚拟网桥在容器网络中的 IP</li>
+<li>宿主机还有其他 IP (如物理网卡 IP: 192.168.0.10)</li>
+<li>但 docker0 确实是宿主机上的一个设备</li>
+</ul>
+<h3 id="误区-2-「容器可以直接访问宿主机的-127-0-0-1」"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#误区-2-「容器可以直接访问宿主机的-127-0-0-1」" class="headerlink" title="误区 2: 「容器可以直接访问宿主机的 127.0.0.1」"></a>误区 2: 「容器可以直接访问宿主机的 127.0.0.1」</h3><p><strong>错误</strong>: </p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">red:connect(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">6379</span>)  <span class="comment">-- 不会工作</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>正确</strong>: </p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">red:connect(<span class="string">&quot;172.18.0.1&quot;</span>, <span class="number">6379</span>)  <span class="comment">-- 通过网关</span></span><br><span class="line"><span class="comment">-- 或</span></span><br><span class="line">red:connect(<span class="string">&quot;host.docker.internal&quot;</span>, <span class="number">6379</span>)  <span class="comment">-- Docker Desktop</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="误区-3-「只有映射了端口才能访问」"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#误区-3-「只有映射了端口才能访问」" class="headerlink" title="误区 3: 「只有映射了端口才能访问」"></a>误区 3: 「只有映射了端口才能访问」</h3><p><strong>部分正确</strong>: </p>
+<ul>
+<li>通过网关访问宿主机端口,需要端口映射 (<code>-p</code>)</li>
+<li>但容器之间直接通信不需要端口映射</li>
+<li>容器可以直接访问其他容器的内部端口</li>
+</ul>
+<h2 id="实际应用示例"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#实际应用示例" class="headerlink" title="实际应用示例"></a>实际应用示例</h2><h3 id="场景-OpenResty-需要连接宿主机上的多个服务"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#场景-OpenResty-需要连接宿主机上的多个服务" class="headerlink" title="场景: OpenResty 需要连接宿主机上的多个服务"></a>场景: OpenResty 需要连接宿主机上的多个服务</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- config.lua</span></span><br><span class="line"><span class="keyword">local</span> _M = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 动态获取网关 IP</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">get_gateway_ip</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">local</span> f = <span class="built_in">io</span>.<span class="built_in">popen</span>(<span class="string">&quot;ip route | grep default | awk &#x27;&#123;print $3&#125;&#x27;&quot;</span>)</span><br><span class="line">    <span class="keyword">local</span> gateway = f:<span class="built_in">read</span>(<span class="string">&quot;*line&quot;</span>)</span><br><span class="line">    f:<span class="built_in">close</span>()</span><br><span class="line">    <span class="keyword">return</span> gateway <span class="keyword">or</span> <span class="string">&quot;172.17.0.1&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">_M.gateway = get_gateway_ip()</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 服务配置</span></span><br><span class="line">_M.redis_host = _M.gateway</span><br><span class="line">_M.redis_port = <span class="number">6379</span></span><br><span class="line"></span><br><span class="line">_M.mysql_host = _M.gateway</span><br><span class="line">_M.mysql_port = <span class="number">3306</span></span><br><span class="line"></span><br><span class="line">_M.elasticsearch_host = _M.gateway</span><br><span class="line">_M.elasticsearch_port = <span class="number">9200</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> _M</span><br></pre></td></tr></table></figure>
+
+<h3 id="场景-在不同的-Docker-Compose-项目间通信"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#场景-在不同的-Docker-Compose-项目间通信" class="headerlink" title="场景: 在不同的 Docker Compose 项目间通信"></a>场景: 在不同的 Docker Compose 项目间通信</h3><p>最佳方案是使用共享网络,而不是通过网关:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建共享网络</span></span><br><span class="line">docker network create shared-net</span><br><span class="line"></span><br><span class="line"><span class="comment"># Redis 项目</span></span><br><span class="line"><span class="comment"># docker-compose.yml</span></span><br><span class="line">version: <span class="string">&#x27;3&#x27;</span></span><br><span class="line">services:</span><br><span class="line">  redis:</span><br><span class="line">    image: redis</span><br><span class="line">    networks:</span><br><span class="line">      - shared-net</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">  shared-net:</span><br><span class="line">    external: <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># OpenResty 项目</span></span><br><span class="line"><span class="comment"># docker-compose.yml</span></span><br><span class="line">version: <span class="string">&#x27;3&#x27;</span></span><br><span class="line">services:</span><br><span class="line">  openresty:</span><br><span class="line">    image: openresty/openresty</span><br><span class="line">    networks:</span><br><span class="line">      - shared-net</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">  shared-net:</span><br><span class="line">    external: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>这样 OpenResty 可以直接使用服务名:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">red:connect(<span class="string">&quot;redis&quot;</span>, <span class="number">6379</span>)  <span class="comment">-- 直接通过服务名</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="/2025/10/17/Understanding-the-Docker-Host-Gateway/#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>Docker 宿主机网关</strong>本质上是:</p>
+<ol>
+<li><strong>虚拟网桥 (docker0) 在容器网络中的 IP 地址</strong></li>
+<li><strong>容器访问宿主机的桥梁</strong></li>
+<li><strong>宿主机网络栈的一部分</strong></li>
+</ol>
+<p>通过网关访问宿主机端口的完整路径:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">容器 → 容器网关 (docker0) → 宿主机网络栈 → iptables 规则 → 目标容器/服务</span><br></pre></td></tr></table></figure>
+
+<p>理解了网关的本质,就能明白:</p>
+<ul>
+<li>为什么容器内 127.0.0.1 不能访问宿主机服务</li>
+<li>为什么要使用网关 IP 才能访问</li>
+<li>为什么共享网络是更好的解决方案</li>
+</ul>
+<p>我在遇到前述问题之后，好好查找整理了这个文档，希望能帮助你我彻底理解 Docker 网络架构中的网关概念。</p>
+
+          </section>
+        </article>
+        
+
+       
+        <div class="pager">
+          
+          
+            <a class="post-next pager-item" href="/2025/10/14/Why-You-Can%E2%80%99t-Access-Local-Redis-via-127-0-0-1-in-a-Docker-Environment/">
+              <strong class="article-nav-caption">Older</strong>
+              <p class="post-nav-title">Why You Can’t Access Local Redis via 127.0.0.1 in a Docker Environment</p>
+            </a>
+          
+        </div>
+        
+
+         <!-- comments -->
+        <div class="comment-section">
+  
+    
+
+    <!-- 多说评论框 start -->
+      <div class="ds-thread" data-thread-key="_posts/Understanding-the-Docker-Host-Gateway.md" data-title="Understanding the Docker Host Gateway" data-url="http://jwfing.github.io/2025/10/17/Understanding-the-Docker-Host-Gateway/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+      <script type="text/javascript">
+      var duoshuoQuery = {short_name:"wayouliu"};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+
+  
+
+
+</div>
+
+    </div>
+    
+</div>
+
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+    <p>由<a href="http://hexo.io/" target="_blank">Hexo</a>强力驱动，搭载<a target="_blank" rel="noopener" href="https://github.com/wayou/hexo-theme-gstyle">gstyle</a>主题</p>
+    <p>
+        &copy; 2025 Junwen Feng
+    </p>
+</footer>
+
+<script src="/lib/jquery.js"></script>
+
+
+<script src="/lib/waves.js"></script>
+
+
+<script src="/lib/jquery-ui.js"></script>
+
+
+<script src="/lib/jquery.tocify.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+    </body>
+</html>

@@ -3,7 +3,7 @@
         <meta charset="utf-8">
             
             <title>
-                About me | Junwen‘s Blog
+                有了这么多 MCP，为什么我还是用不好 AI | Junwen‘s Blog
             </title>
             <meta content="width=device-width, initial-scale=1" name="viewport">
             <meta name="theme-color" content="#4184f3">
@@ -218,20 +218,70 @@ nav {
                     <div class="row">
     <div class="main">
         <article>
-            <h1>
-                About me 
-            </h1>
-            <small>2024/6/9</small>
-            <p>I’m a fullstack engineer and entrepreneur who loves building new products and exploring emerging technologies. I co-founded LeanCloud, a backend platform that supported hundreds of thousands of developers, and later led engineering teams at TapTap Developer Services and other tech companies.</p>
-<p>These days, I’m working on AI-driven products and enjoy turning ideas into real, useful tools. Outside of work, I like reading, being outdoors, and playing badminton.</p>
+          
+          <header class="post-header">
+          
+          </header>
+          <h1 class="post-title">有了这么多 MCP，为什么我还是用不好 AI</h1>
 
+          <section class="post-info">
+            <span class="post-date">2025/12/07</span>
+            
+            
+            <span class="post-tags">
+              <ul class="post-tag-list" itemprop="keywords"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/AI/" rel="tag">AI</a></li><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/%E4%BA%A7%E5%93%81%E8%A7%82%E5%AF%9F/" rel="tag">产品观察</a></li></ul>
+            </span>
+            
+          </section>
+
+          <section class="post-content">
+            <p>这周看到一个比较有意思的产品：<a target="_blank" rel="noopener" href="https://www.producthunt.com/products/mcptotal">MCPTotal</a>，在 ProductHunt 上排到了日榜第 5 名，它的 slogan 是「Launch private MCP servers instantly and connect your agents easily」，乍一看也不明白是做什么的，我就照着它的宣传视频走了一遍。</p>
+<p>本质上，这是一个 Agent + MCP Hub 的产品，选择一个 workspace 后，可以与 Agent 对话，为了提升对话质量，可以选择加入多个公开的 MCP Server，平台自动会帮我们加入到 Agent tools 里面。我试着加入了两个 MCP Servers：Context7 和 DeepWiki，然后我希望它帮我分析一下 supabase flutter SDK 的架构和实现细节，agent 的初始回复有模有样，展示了 reasoning 细节，并跟我确认：</p>
+<blockquote>
+<p>Do you have the code already in this workspace, or should I fetch it from a GitHub URL? Also tell me what kind of analysis you want (architecture overview, API surface, bug&#x2F;security spots, tests&#x2F;coverage, performance, upgrade notes, TODOs, or full audit). I can start by listing the repo files and reading key files once you confirm.</p>
+</blockquote>
+<p>我把 supabase flutter SDK 的 codebase 贴上去，他就开始分析了，从过程中可以看到多次调用了 DeepWiki 的 tools，给了我一个分析结果。</p>
+<p>一次体验下来，我觉得这个产品不错啊，自动收集和集成了众多公开的 MCP Server，让普通用户对 MCP 的使用难度降低了很多。我之前还关注过一些 Github 上的 MCP Hub repo，希望在需要的时候可以找到合适的工具，但是总是容易迷失在茫茫多的工具中，不知道该用哪个，并且时间一长遗忘也在所难免。</p>
+<p>想想看，现在已经有这么多的 MCP Server 了，我使用这些第三方服务的次数变多了吗？好像并没有。MCPTotal 可以解决这个问题吗？</p>
+<h2 id="为什么-MCP-难用"><a href="/2025/12/07/why-mcps-dont-make-ai-easier/#为什么-MCP-难用" class="headerlink" title="为什么 MCP 难用"></a>为什么 MCP 难用</h2><p>我自己做开发较多，这时候最常用的就是 Claude Code 这一类的 Coding Agent，要给他们配置上 MCP，还有点麻烦，并且很多时候还是与项目相关的，不同项目需要的 MCP 也不尽相同，所以还是需要频繁地切换和配置。</p>
+<p>对于通用需求，我一般也是 ChatGPT &#x2F; Claude &#x2F; Gemini 三个轮流使用，因为并不清楚有哪些 MCP 可用，所以也懒得去配置了。</p>
+<p>对于 MCP Server 来说，存在以下一些问题阻碍了他们的普及：</p>
+<ol>
+<li>信息孤岛。有多少 MCP Server 可用，每个 MCP Server 的功能和使用方式都不同，需要用户去理解和学习。</li>
+<li>隐私和安全。用户的数据需要在多个 MCP Server 和 Agent 之间传递，但是这些 Server 的隐私和安全措施不同，用户很难评估数据的安全性。</li>
+</ol>
+<p>MCPTotal 做了很好的集成，但是也还有不足：</p>
+<ol>
+<li><p>如果不使用它的 Agent，这种便利性就还是享受不到。MCPTotal Agent 质量如何，是否能成为我日常使用的主力 Agent，还有待观察。</p>
+</li>
+<li><p>其次，MCPTotal 上面的 MCP Server 质量参差不齐，什么时候该使用哪些 tools，还是需要自己去评估。</p>
+</li>
+</ol>
+<h2 id="MCP-的-MCP"><a href="/2025/12/07/why-mcps-dont-make-ai-easier/#MCP-的-MCP" class="headerlink" title="MCP 的 MCP"></a>MCP 的 MCP</h2><p>由此我想到，有没有一种可能，MCP 也可以有 MCP 呢？这样用户只需要接入一个 MCP，这个 MCP 再去调度和管理其他的 MCP Server，用户就只需要关心这个 MCP 即可。</p>
+
+          </section>
         </article>
+        
+
+       
+        <div class="pager">
+          
+          
+            <a class="post-next pager-item" href="/2025/10/17/Understanding-the-Docker-Host-Gateway/">
+              <strong class="article-nav-caption">Older</strong>
+              <p class="post-nav-title">Understanding the Docker Host Gateway</p>
+            </a>
+          
+        </div>
+        
+
+         <!-- comments -->
         <div class="comment-section">
   
     
 
     <!-- 多说评论框 start -->
-      <div class="ds-thread" data-thread-key="about/abt.md" data-title="About me" data-url="http://jwfing.github.io/about/abt.html"></div>
+      <div class="ds-thread" data-thread-key="_posts/why-mcps-dont-make-ai-easier.md" data-title="有了这么多 MCP，为什么我还是用不好 AI" data-url="http://jwfing.github.io/2025/12/07/why-mcps-dont-make-ai-easier/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
       <script type="text/javascript">
@@ -251,7 +301,9 @@ nav {
 
 
 </div>
+
     </div>
+    
 </div>
 
                 </div>

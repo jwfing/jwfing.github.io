@@ -3,7 +3,7 @@
         <meta charset="utf-8">
             
             <title>
-                有了这么多 MCP，为什么我还是用不好 AI | Junwen‘s Blog
+                Is Postgres-aaS a better business? | Junwen‘s Blog
             </title>
             <meta content="width=device-width, initial-scale=1" name="viewport">
             <meta name="theme-color" content="#4184f3">
@@ -222,42 +222,47 @@ nav {
           <header class="post-header">
           
           </header>
-          <h1 class="post-title">有了这么多 MCP，为什么我还是用不好 AI</h1>
+          <h1 class="post-title">Is Postgres-aaS a better business?</h1>
 
           <section class="post-info">
-            <span class="post-date">2025/12/07</span>
+            <span class="post-date">2025/12/14</span>
             
             
             <span class="post-tags">
-              <ul class="post-tag-list" itemprop="keywords"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/AI/" rel="tag">AI</a></li><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/%E4%BA%A7%E5%93%81%E8%A7%82%E5%AF%9F/" rel="tag">产品观察</a></li></ul>
+              <ul class="post-tag-list" itemprop="keywords"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/%E4%BA%A7%E5%93%81%E8%A7%82%E5%AF%9F/" rel="tag">产品观察</a></li></ul>
             </span>
             
           </section>
 
           <section class="post-content">
-            <p>这周看到一个比较有意思的产品：<a target="_blank" rel="noopener" href="https://www.producthunt.com/products/mcptotal">MCPTotal</a>，在 ProductHunt 上排到了日榜第 5 名，它的 slogan 是「Launch private MCP servers instantly and connect your agents easily」，乍一看也不明白是做什么的，我就照着它的宣传视频走了一遍。</p>
-<p>本质上，这是一个 Agent + MCP Hub 的产品，选择一个 workspace 后，可以与 Agent 对话，为了提升对话质量，可以选择加入多个公开的 MCP Server，平台自动会帮我们加入到 Agent tools 里面。我试着加入了两个 MCP Servers：Context7 和 DeepWiki，然后我希望它帮我分析一下 supabase flutter SDK 的架构和实现细节，agent 的初始回复有模有样，展示了 reasoning 细节，并跟我确认：</p>
-<blockquote>
-<p>Do you have the code already in this workspace, or should I fetch it from a GitHub URL? Also tell me what kind of analysis you want (architecture overview, API surface, bug&#x2F;security spots, tests&#x2F;coverage, performance, upgrade notes, TODOs, or full audit). I can start by listing the repo files and reading key files once you confirm.</p>
-</blockquote>
-<p>我把 supabase flutter SDK 的 codebase 贴上去，他就开始分析了，从过程中可以看到多次调用了 DeepWiki 的 tools，给了我一个分析结果。</p>
-<p>一次体验下来，我觉得这个产品不错啊，自动收集和集成了众多公开的 MCP Server，让普通用户对 MCP 的使用难度降低了很多。我之前还关注过一些 Github 上的 MCP Hub repo，希望在需要的时候可以找到合适的工具，但是总是容易迷失在茫茫多的工具中，不知道该用哪个，并且时间一长遗忘也在所难免。</p>
-<p>想想看，现在已经有这么多的 MCP Server 了，我使用这些第三方服务的次数变多了吗？好像并没有。MCPTotal 可以解决这个问题吗？</p>
-<h2 id="为什么-MCP-难用"><a href="/2025/12/07/why-mcps-dont-make-ai-easier/#为什么-MCP-难用" class="headerlink" title="为什么 MCP 难用"></a>为什么 MCP 难用</h2><p>我自己做开发较多，这时候最常用的就是 Claude Code 这一类的 Coding Agent，要给他们配置上 MCP，还有点麻烦，并且很多时候还是与项目相关的，不同项目需要的 MCP 也不尽相同，所以还是需要频繁地切换和配置。</p>
-<p>对于通用需求，我一般也是 ChatGPT &#x2F; Claude &#x2F; Gemini 三个轮流使用，因为并不清楚有哪些 MCP 可用，所以也懒得去配置了。</p>
-<p>对于 MCP Server 来说，存在以下一些问题阻碍了他们的普及：</p>
+            <p>最近同事提起一个国内的产品，主要提供 Postgres 集成服务，将高可用架构部署、可观测性监控、扩展管理、备份恢复等功能整合在一起，以开源形式提供给开发者，主打全生态和便捷管理。这让我思考：我们正在开发的 InsForge 平台是否也可以将后端数据库服务独立出来，打造成一个面向开发者的副产品？</p>
+<p>出于好奇，我调研了市场上现有的类似产品：</p>
 <ol>
-<li>信息孤岛。有多少 MCP Server 可用，每个 MCP Server 的功能和使用方式都不同，需要用户去理解和学习。</li>
-<li>隐私和安全。用户的数据需要在多个 MCP Server 和 Agent 之间传递，但是这些 Server 的隐私和安全措施不同，用户很难评估数据的安全性。</li>
-</ol>
-<p>MCPTotal 做了很好的集成，但是也还有不足：</p>
-<ol>
-<li><p>如果不使用它的 Agent，这种便利性就还是享受不到。MCPTotal Agent 质量如何，是否能成为我日常使用的主力 Agent，还有待观察。</p>
+<li><p><a target="_blank" rel="noopener" href="https://stackgres.io/">StackGres</a>：作为 Kubernetes Operator，提供高可用、备份恢复、监控可观测性、扩展管理等功能。从社区热度来看，GitHub 上关注度不高（1.3k stars，70 forks），<a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=28865432">Hacker News</a> 和 <a target="_blank" rel="noopener" href="https://www.reddit.com/r/kubernetes/comments/v61ypo/stackgres_postgresql_operator/">Reddit</a> 上的讨论也相对有限，影响力相对较小。</p>
 </li>
-<li><p>其次，MCPTotal 上面的 MCP Server 质量参差不齐，什么时候该使用哪些 tools，还是需要自己去评估。</p>
+<li><p><a target="_blank" rel="noopener" href="https://cloudnative-pg.io/">CloudNativePG</a>：功能上与 StackGres 类似，但社区活跃度明显更高（7.6k stars，567 forks）。作为 CNCF sandbox 项目，与 KubeCon 等官方活动合作紧密。从 <a target="_blank" rel="noopener" href="https://www.reddit.com/r/kubernetes/comments/y5nen0/does_anyone_have_experience_to_share_with/">Reddit 讨论</a> 来看，已有不少开发者在生产环境中长期使用。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://aiven.io/">Aiven</a>：不同于前两者的开源项目定位，Aiven 是一个托管平台，可以快速创建云实例来管理 Postgres 服务。它的产品线更加丰富，除 Postgres 外还支持 MySQL、Kafka、ClickHouse、Redis、Elasticsearch 等多种数据库，并提供免费 VM 实例供开发者试用。从 <a target="_blank" rel="noopener" href="https://www.reddit.com/r/aiven_io/">Reddit 社区</a> 反馈来看，用户基数和活跃度都不错。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.percona.com/postgresql">Percona</a>：定位为企业级 Postgres 发行版，提供全方位的高可用、备份恢复、监控和扩展支持。与上述产品的差异在于，Percona 更像是对 Postgres 的深度优化和增强版本，类似于 Red Hat 之于 Linux 的关系。</p>
 </li>
 </ol>
-<h2 id="MCP-的-MCP"><a href="/2025/12/07/why-mcps-dont-make-ai-easier/#MCP-的-MCP" class="headerlink" title="MCP 的 MCP"></a>MCP 的 MCP</h2><p>由此我想到，有没有一种可能，MCP 也可以有 MCP 呢？这样用户只需要接入一个 MCP，这个 MCP 再去调度和管理其他的 MCP Server，用户就只需要关心这个 MCP 即可。</p>
+<h2 id="Postgres-aaS-是门好生意吗"><a href="/2025/12/14/Is-Postgres-aaS-a-better-business/#Postgres-aaS-是门好生意吗" class="headerlink" title="Postgres-aaS 是门好生意吗?"></a>Postgres-aaS 是门好生意吗?</h2><p>了解完现有产品后，我们来分析一下市场定位：</p>
+<p><strong>不同用户群体的选择逻辑：</strong></p>
+<ul>
+<li><strong>全栈开发者&#x2F;AI Coder</strong>：Supabase 提供的价值在于标准化后端服务，对于 Cursor、Vibe Coder 这类 AI 开发工具来说，开箱即用的完整 BaaS 方案极具吸引力。</li>
+<li><strong>有技术背景的个人开发者</strong>：Aiven 这类平台主要解决数据库运维管理痛点，提供省心的托管服务。</li>
+<li><strong>企业用户</strong>的选择则更加多元：<ul>
+<li>需要 Serverless 数据库服务时，倾向于选择 AWS RDS、Azure Database、GCP Cloud SQL 等公有云服务，因为有更丰富的功能和更可靠的 SLA 保障；</li>
+<li>拥有技术团队的企业，可能更青睐 Percona 这样的企业级发行版，看重其性能优化、可扩展性和专业技术支持；</li>
+<li>技术实力较强且有自建需求的团队，会选择 Kubernetes + StackGres&#x2F;CloudNativePG 的自主部署方案。</li>
+</ul>
+</li>
+</ul>
+<p><strong>市场空间判断：</strong></p>
+<p>从上述分析来看，Postgres-aaS 的市场相对小众，核心受众是有一定技术背景的个人开发者和小型创业公司。但问题是，这个群体的需求似乎已经被 Supabase 这样的完整 BaaS 平台很好地满足了——既然可以获得数据库+认证+存储+实时订阅的全套服务，为什么还要单独使用一个 Postgres-aaS 产品呢？</p>
+<p><strong>技术视角的价值：</strong></p>
+<p>当然，单从技术探索角度来看，Postgres 生态系统确实充满趣味性。结合后端 DevOps 的实际需求，围绕 Postgres-aaS 这个切入点，我们可以深挖高可用架构设计、性能优化、扩展生态整合等诸多技术领域，积累宝贵的工程经验。但这是否足以支撑一个可持续的商业模式，仍需谨慎评估。</p>
 
           </section>
         </article>
@@ -266,15 +271,10 @@ nav {
        
         <div class="pager">
           
-            <a class="post-prev pager-item" href="/2025/12/14/Is-Postgres-aaS-a-better-business/" >
-              <strong class="article-nav-caption">Newer</strong>
-              <p class="post-nav-title">Is Postgres-aaS a better business?</p>
-            </a>
           
-          
-            <a class="post-next pager-item" href="/2025/10/17/Understanding-the-Docker-Host-Gateway/">
+            <a class="post-next pager-item" href="/2025/12/07/why-mcps-dont-make-ai-easier/">
               <strong class="article-nav-caption">Older</strong>
-              <p class="post-nav-title">Understanding the Docker Host Gateway</p>
+              <p class="post-nav-title">有了这么多 MCP，为什么我还是用不好 AI</p>
             </a>
           
         </div>
@@ -286,7 +286,7 @@ nav {
     
 
     <!-- 多说评论框 start -->
-      <div class="ds-thread" data-thread-key="_posts/why-mcps-dont-make-ai-easier.md" data-title="有了这么多 MCP，为什么我还是用不好 AI" data-url="http://jwfing.github.io/2025/12/07/why-mcps-dont-make-ai-easier/"></div>
+      <div class="ds-thread" data-thread-key="_posts/Is-Postgres-aaS-a-better-business.md" data-title="Is Postgres-aaS a better business?" data-url="http://jwfing.github.io/2025/12/14/Is-Postgres-aaS-a-better-business/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
       <script type="text/javascript">
